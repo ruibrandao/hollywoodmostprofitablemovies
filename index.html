@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="stylesheet"  href="projects.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <script type="text/javascript" src="https://d3js.org/d3.v7.min.js"></script>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap" rel="stylesheet">
+    <style type="text/css"></style>
+
+</head>
+<body style="background-color: #F7EEEE;">
+
+<div id="label_popup">
+    <div>
+        <h4 id="label_filme"></h4>
+        <h4 id="label_studio"></h4>
+    </div>
+    <div>
+        <h4 id="label_genero"></h4>
+        <h4 id="label_audience"></h4>
+    </div>
+    <div>
+        <h4 id="label_rotten"></h4>
+        <h4 id="label_profitability"></h4>
+    </div>
+    <div>
+        <h4 id="label_gross"></h4>
+        <h4 id="label_ano"></h4>
+    </div>
+</div>
+
+<div id="mySidenav" class="sidenav">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+
+    <div class="filter">
+        <div onclick="togglePercentagemFilter()" class="percentagem" >
+            <p style="font-size: 30px; margin: 0px;">%</p>
+            <p id="percentage_lbl" style="margin: 0px;">Audience</p>
+        </div>
+
+        <div class="vl"></div>
+        <div class="generos">
+            <div onclick="toggleFilter(Global, 'Animation')" class="Animation">
+                <img src="img/animation.png">
+                <p>Animation</p>
+            </div>
+
+            <div onclick="toggleFilter(Global, 'Drama')" class="Drama">
+                <img src="img/drama.png">
+                <p>Drama</p>
+            </div>
+
+            <div onclick="toggleFilter(Global, 'Fantasy')" class="Fantasy">
+                <img src="img/magic-wand%20(1).png">
+                <p>Fantasy</p>
+            </div>
+
+            <div onclick="toggleFilter(Global, 'Comedy')" class="Comedy">
+                <img src="img/clown.png">
+                <p>Comedy</p>
+            </div>
+
+            <div onclick="toggleFilter(Global, 'Action')" class="Action">
+                <img src="img/action.png">
+                <p>Action</p>
+            </div>
+
+            <div onclick="toggleFilter(Global, 'Romance')" class="Romance">
+                <img src="img/hearts.png">
+                <p>Romance</p>
+            </div>
+        </div>
+
+        <div class="years">
+
+            <div onclick="toggleFilter(Anos, 2007)" class="2007">
+                <p><strong>2007</strong></p>
+            </div>
+            <div onclick="toggleFilter(Anos, 2008)" class="2008">
+                <p><strong>2008</strong></p>
+            </div>
+            <div onclick="toggleFilter(Anos, 2009)" class="2009">
+                <p><strong>2009</strong></p>
+            </div>
+            <div onclick="toggleFilter(Anos, 2010)" class="2010">
+                <p><strong>2010</strong></p>
+            </div>
+            <div onclick="toggleFilter(Anos, 2011)" class="2011">
+                <p><strong>2011</strong></p>
+            </div>
+
+
+        </div>
+        <div class="spacer" style="clear: both;"></div>
+    </div>
+    <div>
+        <div class="row" style="">
+            <div class="column">
+                <div class="gradient">
+
+                </div>
+            </div>
+        </div>
+        <div class="worldwide">
+            <p>Worldwide Gross</p>
+        </div>
+        <div class=hr style="width:80%;"></div>
+        <div class="profitability">
+            <img src="img/label_profitability.png">
+            <p>Profitability</p>
+        </div>
+    </div>
+
+
+
+
+
+
+
+</div>
+<header class="titulo">
+    <h1>Hollywood Most</h1>
+    <h1 style="position: relative; right: -30px;">Profitable Movies</h1>
+</header>
+
+<span style="font-size:20px;cursor:pointer;position: absolute;right:2%;top:3%;" onclick="openNav()">&#9776; Filters</span>
+
+
+<script type="text/javascript">
+
+    var Global;
+    var graphFilm;
+    var link;
+    var node;
+    var svg;
+    var simulation;
+    var Anos;
+    var percentagem;
+    var percentageSelect = "audience";
+    var radius = 0.3;
+
+    function openNav() {
+        document.getElementById("mySidenav").style.width = "250px";
+    }
+
+    function closeNav() {
+        document.getElementById("mySidenav").style.width = "0";
+    }
+
+    function getKeyByValue(object, value) {
+        return Object.keys(object).find(key => object[key] === value);
+    }
+
+    function drag(simulation) {
+
+        function dragstarted(event) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            event.subject.fx = event.subject.x;
+            event.subject.fy = event.subject.y;
+        }
+
+        function dragged(event) {
+            event.subject.fx = event.x;
+            event.subject.fy = event.y;
+        }
+
+        function dragended(event) {
+            if (!event.active) simulation.alphaTarget(0);
+            event.subject.fx = null;
+            event.subject.fy = null;
+        }
+
+        return d3.drag()
+            .on("start", dragstarted)
+            .on("drag", dragged)
+            .on("end", dragended);
+    }
+
+    function ticked() {
+        link
+            .attr("x1", d => d.source.x)
+            .attr("y1", d => d.source.y)
+            .attr("x2", d => d.target.x)
+            .attr("y2", d => d.target.y);
+
+        node
+            .attr("cx", d => d.x)
+            .attr("cy", d => d.y);
+    }
+
+    function update() {
+        d3.select("svg").remove();
+
+        svg = d3.select("body").append("svg");
+
+        simulation = d3.forceSimulation(graphFilm.nodes)
+            .force("link", d3.forceLink(graphFilm.links).id(function (d){
+                    return d.id;
+                }).distance(function (d){return d.tamanho;}).strength(0.01)
+            )
+            .force("charge", d3.forceManyBody().strength(-30).distanceMax(250).distanceMin(10))
+            .force("center", d3.forceCenter(innerWidth/2, innerHeight/2-50))
+            .force("collide", d3.forceCollide().radius(d => d.audience*radius + 2))
+            .on("tick", ticked);
+
+        link = svg
+            .append("g")
+            .attr("class", "links")
+            .selectAll("line")
+            .data(graphFilm.links.filter(function (d) {
+                return (Global.length === 0) ? true : Global.includes(d.type);})
+                .filter(function (i){
+                    return (Anos.length === 0) ? true : Anos.includes(i.ano1) && Anos.includes(i.ano2);})
+            )
+            .enter()
+            .append("line")
+            .attr("stroke-width", function(d) {
+                return 0.5;
+            });
+
+        node = svg.append("g")
+            .selectAll("circle")
+            .data(graphFilm.nodes.filter(function (d){
+                return (Global.length === 0) ? true : Global.includes(d.genre);})
+                .filter(function (i){
+                    return (Anos.length === 0) ? true : Anos.includes(i.ano);})
+            )
+            .enter()
+            .append("circle")
+            .attr("r", function (d){
+                return d[percentageSelect]*radius})
+            .attr("fill", function(d) {
+                return color_gradient(d.gross);
+            })
+            .call(drag(simulation))
+            .on("mouseover", function (d, i){
+                document.getElementById("label_popup").style.display = "block";
+                document.getElementById("label_popup").style.background = color_gradientLabel(i.gross);
+                document.getElementById("label_filme").innerHTML = "film : " +i.id;
+                document.getElementById("label_studio").innerHTML = "studio : " + i.studio;
+                document.getElementById("label_genero").innerHTML = "genre : " +i.genre;
+                document.getElementById("label_audience").innerHTML = "audience score : " +i.audience;
+                document.getElementById("label_rotten").innerHTML = "rotten tomatoes score : " +i.rotten;
+                document.getElementById("label_profitability").innerHTML = "profitability : " + i.profi;
+                document.getElementById("label_gross").innerHTML = "worldwide gross : " +i.gross;
+                document.getElementById("label_ano").innerHTML = "ano : " + i.ano;
+                console.log("oi");
+            })
+            .on("mouseout", function (d, i){
+                document.getElementById("label_popup").style.display = "none";
+            });
+
+    }
+
+    function updateFiltersGenres() {
+
+        genres = document.getElementsByClassName("generos")[0];
+
+        for (var i = genres.childElementCount - 1; i >= 0; i--) {
+            if (Global.includes(genres.children[i].className)) {
+                genres.children[i].style.background = "rgba(250,128,114,0.7)";
+            } else {
+                genres.children[i].style.background = "white";
+            }
+        }
+    }
+
+    function updateFiltersYears() {
+
+        years = document.getElementsByClassName("years")[0];
+
+        for (var i = years.childElementCount - 1; i >= 0; i--) {
+            if (Anos.includes(parseInt(years.children[i].className))) {
+                years.children[i].style.background = "rgba(250,128,114,0.7)";
+            } else {
+                years.children[i].style.background = "white";
+            }
+        }
+    }
+
+    function toggleFilter(Name, value) {
+
+        if(Name.includes(value)){
+            Name.splice(getKeyByValue(Name, value), 1); //getkeybyvalue serve para aceder a uma entrada num array onde nao sabemos a key, ou seja vai dar a posicao no array
+        } else {
+            Name.push(value);
+        }
+
+        updateFiltersGenres();
+        updateFiltersYears();
+        update();
+    }
+
+    function togglePercentagemFilter(){
+        percentagem = !percentagem;
+        if(percentagem) {
+            percentageSelect = "rotten";
+            document.getElementById("percentage_lbl").innerHTML = "Rotten Tomatoes"; //mudar o texto
+        } else {
+            percentageSelect = "audience";
+            document.getElementById("percentage_lbl").innerHTML = "Audience";
+
+        }
+
+        update();
+    }
+
+    var color_gradient = d3.scaleLinear()
+        .domain([0, 800])
+        .range(['rgba(250,128,114,1)', 'rgba(85,32,0,1)']);
+
+    var color_gradientLabel = d3.scaleLinear()
+        .domain([0, 800])
+        .range(['rgba(250,128,114,0.5)', 'rgba(85,32,0,0.5)']);
+
+    d3.dsv(';','https://raw.githubusercontent.com/ruibrandao/data/main/dataMovies.csv',d3.autoType).then(function (data) {
+    console.log(data);
+
+    // arrays de cada uma das colunas
+
+    /*
+var filmes = [];
+var generos = [];
+var studio = [];
+var worldwidegross = [];
+var profitability = [];
+var audiencescore = [];
+var rottentomatoes = [];
+var anos = [];
+
+
+
+data.forEach(function (item) {
+  filmes.push(item.film);
+  generos.push(item.genre);
+  audiencescore.push(item.audience);
+  rottentomatoes.push(item.tomatoes);
+  worldwidegross.push(item.gross);
+  profitability.push(item.profitability);
+  studio.push(item.studio);
+  anos.push(item.year);
+});
+
+console.log(filmes);
+console.log(generos);
+console.log(studio);
+console.log(audiencescore);
+console.log(rottentomatoes);
+console.log(worldwidegross);
+console.log(profitability);
+console.log(anos);
+
+*/
+
+    //filtrar por genero
+
+    let filtroGenero = d3.group(data, d => d.genre);
+    let filtroComedy = filtroGenero.get("Comedy");
+
+    console.log(filtroGenero);
+
+    var nodes = [...Array.from(data.map(function(d) {return {id: d.film, genre: d.genre, audience: d.audience, rotten: d.tomatoes,
+        ano: d.year, gross: d.gross, studio: d.studio, profi: d.profitability}}))];
+    var links = [];
+
+    data.forEach(function (item){
+    data.forEach(function (outro){
+    if(item !== outro && item.genre === outro.genre){
+    let sum = ((item.profitability+outro.profitability)/2)*20;
+    links.push({source: item.film, target: outro.film, type: item.genre, tamanho: sum, ano1: item.year, ano2: outro.year});
+}
+})
+});
+
+    Global = ["Comedy", "Drama", "Romance", "Animation", "Action", "Fantasy"];
+    Anos = [2007, 2008, 2009, 2010, 2011];
+
+    console.log(Global);
+
+    graphFilm = {nodes: nodes, links: links};
+
+    console.log(graphFilm);
+
+    svg = d3.select("body").append("svg");
+
+    simulation = d3.forceSimulation(graphFilm.nodes)
+    .force("link", d3.forceLink(graphFilm.links).id(function (d){
+    return d.id;
+}).distance(function (d){return d.tamanho;}).strength(0.01)
+    )
+    .force("charge", d3.forceManyBody().strength(-30).distanceMax(250).distanceMin(10))
+    .force("center", d3.forceCenter(innerWidth/2, innerHeight/2-50))
+    .force("collide", d3.forceCollide().radius(d => d[percentageSelect]*radius + 2))
+    .on("tick", ticked);
+
+    link = svg
+    .append("g")
+    .attr("class", "links")
+    .selectAll("line")
+    .data(graphFilm.links.filter(function (d) {
+    return (Global.length === 0) ? true : Global.includes(d.type);})
+        .filter(function (i){
+            return (Anos.length === 0) ? true : Anos.includes(i.ano1) && Anos.includes(i.ano2);})
+    )
+    .enter()
+    .append("line")
+    .attr("stroke-width", function(d) {
+    return 0.5;
+});
+
+    node = svg.append("g")
+    .selectAll("circle")
+    .data(graphFilm.nodes.filter(function (d){
+    return (Global.length === 0) ? true : Global.includes(d.genre);})
+        .filter(function (i){
+            return (Anos.length === 0) ? true : Anos.includes(i.ano);})
+    )
+    .enter()
+    .append("circle")
+    .attr("r", function (d){
+        console.log(percentageSelect);
+        return d[percentageSelect]*radius})
+    .attr("fill", function(d) {
+    return color_gradient(d.gross);
+})
+    .call(drag(simulation))
+        .on("mouseover", function (d, i){
+            document.getElementById("label_popup").style.display = "block";
+            document.getElementById("label_popup").style.background = color_gradientLabel(i.gross);
+            document.getElementById("label_filme").innerHTML = "film : " +i.id;
+            document.getElementById("label_studio").innerHTML = "studio : " + i.studio;
+            document.getElementById("label_genero").innerHTML = "genre : " +i.genre;
+            document.getElementById("label_audience").innerHTML = "audience score : " +i.audience;
+            document.getElementById("label_rotten").innerHTML = "rotten tomatoes score : " +i.rotten;
+            document.getElementById("label_profitability").innerHTML = "profitability : " + i.profi;
+            document.getElementById("label_gross").innerHTML = "worldwide gross : " +i.gross;
+            document.getElementById("label_ano").innerHTML = "ano : " + i.ano;
+            console.log("oi");
+        })
+        .on("mouseout", function (d, i){
+            document.getElementById("label_popup").style.display = "none";
+        });
+
+
+    /*
+    eventListener (e):
+    if(Global.includes(e.target.value)){
+    Global.remove(e.target.value)
+    }
+    else {
+    Global.append(e.target.value)
+    }
+
+    var points = [];
+    data.forEach(function (item, i){
+        points.push([i, item.audience]);
+    })
+
+    console.log(points);
+*/
+
+setTimeout(function () {
+        updateFiltersGenres();
+        updateFiltersYears();
+    }, 1000);
+
+});
+
+
+</script>
+
+   
+</body>
+<!--
+<div class="footer">
+    <p>Project&nbsp;by</p>
+    <p>Bárbara&nbsp;Rosa | 2021205841<br>Rui&nbsp;Brandão | 2017270806</p>
+    <p>Data&nbsp;Visualization&nbsp;-&nbsp;MDM&nbsp;2022</p>
+</div>
+-->
+</html> 

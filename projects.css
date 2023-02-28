@@ -1,0 +1,334 @@
+html, body {
+    margin: 0;
+    overflow: hidden;
+}
+
+body {
+    font-family:'Nunito';
+}
+
+
+#label_popup{
+    padding: 20px;
+    display: none;
+    position: absolute;
+    top: 70vh;
+    z-index: 0;
+    height: 30vh;
+    width: 60%;
+    left: 50%;
+    transform: translate(-50%, 40%);
+}
+
+#label_popup > div > h4{
+    margin: 0px;
+}
+
+#label_popup > div {
+    float: left;
+    width: 25%;
+}
+
+.gradient{
+    background: rgb(250,128,114);
+    background: linear-gradient(90deg, rgba(250,128,114,1) 0%, rgba(85,32,0,1) 100%);
+    width: 150px;
+    height: 20px;
+    margin-left: 50px;
+}
+
+.footer{
+    color:#902924;
+    font-size: 11px;
+    position:absolute;
+    bottom:0;
+    width:10%;
+    padding-left:1%;
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    background-color: white;
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
+.links{
+    stroke: grey;
+}
+
+svg {
+    width: 100%;
+    height: 1500px;
+    z-index: 0;
+    overflow: visible;
+}
+
+.titulo{
+    position: absolute;
+    left:2%;
+    font-size:10px;
+    color: #902924;
+    display: block;
+}
+.sidebar .category{
+    font-family: 'Nunito';
+    font-size:7px;
+    padding-top: 20px;
+    padding-left: 5px;
+}
+
+.anitext{
+    font-family: 'Nunito';
+    font-size: 9px;
+    position: absolute;
+    top:15%;
+    left: 21%;
+    display:block;
+
+}
+.dratext{
+    font-family: 'Nunito';
+    font-size: 9px;
+    position: absolute;
+    top:25%;
+    left:21%;
+    display:block;
+
+}
+
+.fantext{
+    font-family: 'Nunito';
+    font-size: 9px;
+    position: absolute;
+    top:35%;
+    left: 21%;
+    display:block;
+}
+
+.comtext{
+    font-family: 'Nunito';
+    font-size: 9px;
+    position: absolute;
+    top:45%;
+    left: 21%;
+    display:block;
+}
+.actext{
+    font-family: 'Nunito';
+    font-size: 9px;
+    position: absolute;
+    top:55%;
+    left:21%;
+    display:block;
+
+}
+.romtext{
+    font-family: 'Nunito';
+    font-size: 9px;
+    position: absolute;
+    top:65%;
+    left:21%;
+    display:block;
+
+}
+
+.percentagem{
+    font-family: 'Nunito';
+    font-size: 48px;
+    left: 55%;
+    display: block;
+    text-align: center;
+    padding-bottom:  20px;
+    padding-top:    20px;
+}
+
+.percentagem:hover {
+    cursor:     pointer;
+
+}
+
+.percentagem:hover > p {
+    opacity:    0.5;
+}
+
+.percentagem > p {
+    font-size: 30%;
+}
+
+.Audience{
+    font-family: 'Nunito';
+    font-size: 9px;
+    position: absolute;
+    left:55%;
+    display: block;
+    top:15%;
+}
+
+.filter {
+    margin-bottom: 50px;
+}
+
+.generos {
+    width: 48%;
+    float: left;
+}
+
+.generos > div {
+    padding-top: 1vh;
+    padding-bottom: 1vh;
+}
+
+.generos > div:hover > img {
+    opacity:    0.5;
+}
+
+.generos > div:hover {
+   cursor:  pointer;
+}
+
+.generos > div > img {
+    max-width: 4vh;
+    margin-left: 50%;
+    transform: translate(-50%, 0px);
+}
+
+.generos > div > p {
+    text-align: center;
+    margin: 0px;
+    font-size: 12px;
+}
+
+.years {
+    width: 52%;
+    float: left;
+}
+
+.years > div {
+    text-align: center;
+    font-size: 4vh;
+}
+
+
+
+.years > div:hover {
+        cursor:     pointer;
+}
+
+.years > div:hover > p {
+    opacity: 0.5;
+}
+
+.years > div > p {
+    margin: 0px;
+    padding: 15px;
+}
+
+.profitability > img {
+    width: 60px;
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
+
+
+.profitability > p {
+    text-align: center;
+}
+
+
+.sidebar div img {
+    display: relative;
+    padding-left: 20px;
+    right: 20px;
+    padding-right: 20px;
+    margin-top: 60px;
+
+}
+.row {
+}
+
+.column {
+    margin:0.5px;
+}
+
+.worldwide {
+    font-family: 'Nunito';
+    font-size: 14px;
+    text-align: center;
+}
+.prof {
+    font-family: 'Nunito';
+    font-size: 14px;
+    position: relative;
+    left: 70px;
+}
+
+.vl{
+    border-left: 2px solid #DCDCDC;
+    height:50%;
+    position: absolute;
+    left: 48%;
+    display: block;
+}
+
+.sidenav {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    right: 0;
+    overflow-x: hidden;
+    transition: 0.5s;
+    padding-top: 60px;
+    background-color: white;
+}
+
+.sidenav a {
+    padding: 8px 8px 8px 32px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+    transition: 0.3s;
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
